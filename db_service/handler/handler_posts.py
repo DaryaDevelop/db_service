@@ -1,21 +1,22 @@
 from flask import request
 from db_service import app, db
-from db_service.model.model import Post
+from db_service.model.model import Post, User
 
 
-@app.get("/all_posts")
+@app.get("/posts")
 def get_all_posts():
     posts = Post.query.all()
     return {
             "posts": [{
                 "id": item.id,
                 "title": item.title,
-                "body": item.body
+                "body": item.body,
+                "user_id": item.user_id
             }for item in posts]
     }, 200
     
 
-@app.post("/new_posts")
+@app.post("/posts")
 def new_posts():
     title = request.json.get("title")
     body = request.json.get("body")
@@ -26,7 +27,10 @@ def new_posts():
             "description": "Title already exist",
             "data": {}
         }, 400
-    item = Post(title=title, body=body)
+    uuid = request.headers.get("Token")
+    uuid = uuid.split(" ")
+    user = User.query.filter_by(uuid=uuid[1]).first()
+    item = Post(title=title, body=body, user=user)
     db.session.add(item)
     db.session.commit()
     return {
@@ -61,7 +65,7 @@ def update_posts(id):
         }, 200
     
     
-@app.delete("/delete_posts/<int:id>")
+@app.delete("/posts/<int:id>")
 def delete_posts(id):
     item = Post.query.get(id)
     if not item:

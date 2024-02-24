@@ -19,3 +19,4 @@ with app.app_context():
 
 from db_service.handler import handler_posts
 from db_service.handler import handler_users
+from db_service.handler import utils
