@@ -54,7 +54,7 @@ def sign_in():
         "description": "OK",
         "data": {
             "user": {
-                "id": user.id,
+                "uuid": user.uuid,
                 "login": user.login
             }
         }
