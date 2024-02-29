@@ -1,5 +1,6 @@
 from db_service import app, db
-from db_service.model.model import Post, User
+from db_service.model.model import Comment, Post, User
+
 
 @app.get("/is_owner/<int:id>")
 def is_owner(id):
@@ -20,6 +21,7 @@ def is_owner(id):
         }
     }, 200
 
+
 @app.get("/check_login/<uuid>")
 def check_login(uuid):
     user = User.query.filter_by(uuid=uuid).first()
@@ -34,5 +36,25 @@ def check_login(uuid):
         "description": "OK",
         "data": {
             "uuid": user.uuid
+        }
+    }, 200
+
+
+@app.get("/is_owner_comment/<int:id>")
+def is_owner_comment(id):
+    comment = Comment.query.filter_by(id=id).first()
+    if not comment:
+        return {
+            "status": 3,
+            "description": "Fail",
+            "data": {}
+        }, 400
+    return {
+        "status": 0,
+        "description": "OK",
+        "data": {
+            "user_id": {
+                "uuid": comment.user.uuid
+            }
         }
     }, 200
