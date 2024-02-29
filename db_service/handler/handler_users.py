@@ -1,4 +1,5 @@
 from flask import request
+
 from db_service import app, db
 from db_service.model.model import User
 
